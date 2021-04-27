@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="settings_language">system</string>
+    <string name="settings_username">User_1234</string>
 </resources>
