@@ -158,7 +158,7 @@ class Chat extends AppCompatActivity {
         if(user_input.length()>sample.length()){
             return 0; //Неверно
         }
-        hint.setText(sample.substring(user_input.length()-1,sample.length()));
+        hint.setText(sample.substring(user_input.length(),sample.length()));
         for(int i=0;i<user_input.length()-1;i++){
             if(!(user_input.substring(i,i+1).equals(sample.substring(i,i+1)))){
                 return 0; //Неверно
@@ -201,6 +201,7 @@ public class game_activity extends AppCompatActivity {
         Context ctx = this;
 
         EditText input = (EditText)findViewById(R.id.InputText);
+        input.setText(null);
         TextView hint = (TextView)findViewById(R.id.TextHint);
         hint.setText(user.GetPhrase());
         input.addTextChangedListener(new TextWatcher() {
