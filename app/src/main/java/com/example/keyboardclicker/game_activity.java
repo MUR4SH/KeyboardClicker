@@ -5,14 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,31 +25,51 @@ class Chat extends AppCompatActivity {
     private String nickname;
     private String message;
     private String phrase;
+    private int num=0;
+    private String lang="";
     public Chat(Context ctx){
-        String lang;
+        this.nickname = ctx.getResources().getStringArray(R.array.names_array)[r.nextInt(20)];
+        this.SetLang(ctx);
+        this.SetMessage(ctx,0);
+        this.SetPhrase(ctx,0);
+        this.num = 0;
+    }
+    public void SetLang(Context ctx){
+        String lang="";
         if (ctx.getResources().getString(R.string.settings_language).equals("system")) {
             lang = Locale.getDefault().getLanguage();
         }else{
             lang = ctx.getResources().getString(R.string.settings_language);
         }
-        Random r = new Random();
-        this.nickname = ctx.getResources().getStringArray(R.array.names_array)[r.nextInt(20)];
-        if (lang.equals("ru") || lang.equals("RU") || lang.equals("Russian") || lang.equals("RUSSIAN") || lang.equals("russian")) {
-            this.message = ctx.getResources().getString(R.string.initiate_text_ru);
-        }else{
-            this.message =  ctx.getResources().getString(R.string.initiate_text_eng);
-        }
     }
-
     public String GetNick(){
         return this.nickname;
     }
     public String GetMessage(){
         return this.message;
     }
-    public void SetNick(Context ctx){
-        TextView TextNick = findViewById(R.id.userNick);
-        TextNick.setText(this.nickname);
+    public String GetPhrase(){
+        return this.phrase;
+    }
+    public void SetMessage(Context ctx,int num){
+        if(this.lang.equals("")){
+            this.SetLang(ctx);
+        }
+        if (this.lang.equals("ru") || this.lang.equals("RU") || this.lang.equals("Russian") || this.lang.equals("RUSSIAN") || this.lang.equals("russian")) {
+            this.message = ctx.getResources().getStringArray(R.array.friend_ru)[num];
+        }else{
+            this.message = ctx.getResources().getStringArray(R.array.friend_eng)[num];
+        }
+    }
+    public void SetPhrase(Context ctx,int num){
+        if(this.lang.equals("")){
+            this.SetLang(ctx);
+        }
+        if (this.lang.equals("ru") || this.lang.equals("RU") || this.lang.equals("Russian") || this.lang.equals("RUSSIAN") || this.lang.equals("russian")) {
+            this.phrase = ctx.getResources().getStringArray(R.array.player_ru)[num];
+        }else{
+            this.phrase =  ctx.getResources().getStringArray(R.array.player_eng)[num];
+        }
     }
     public LinearLayout GenerateChatMessage(Context ctx){
         TextView textView_msg = new TextView(ctx);
@@ -85,8 +106,23 @@ class Chat extends AppCompatActivity {
 
         return chat_cloud;
     }
-    public void CheckString(Context ctx){
-        return;
+
+    public int CheckString(Context ctx,View v, int keyCode, KeyEvent event, EditText input){
+        String sample = this.phrase;
+        String user_input = input.getText().toString();
+        if(user_input.length()>sample.length()){
+            return 0; //Неверно
+        }
+        for(int i=0;i<user_input.length()-1;i++){
+            if(!(user_input.substring(i,i+1).equals(sample.substring(i,i+1)))){
+                return 0; //Неверно
+            }
+        }
+        if(user_input.length()==sample.length()){
+            return 2; //Строки совпали
+        }else {
+            return 1; //Подстроки верны
+        }
     }
 }
 
@@ -111,9 +147,23 @@ public class game_activity extends AppCompatActivity {
         Chat user = new Chat(this);
         TextView TextNick = findViewById(R.id.userNick);
         TextNick.setText(user.GetNick());
+
         LinearLayout chat_window = (LinearLayout)findViewById(R.id.chat_window);
         chat_window.addView(user.GenerateChatMessage(this));
 
+        Context ctx = this;
+
+        EditText input = (EditText)findViewById(R.id.InputText);
+        input.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                user.CheckString(ctx,v,keyCode,event,input);
+                return true;
+            }
+        });
+
+        TextView hint = (TextView)findViewById(R.id.TextHint);
+        hint.setText(user.GetPhrase());
 
         /*TextView = (Button)findViewById(R.id.btn_return);//InputText
         btn_rtrn.setOnClickListener(new View.OnClickListener() {

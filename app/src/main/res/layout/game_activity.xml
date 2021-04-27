@@ -96,7 +96,7 @@
                 android:textSize="12sp" />
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/TextHint"
                 android:layout_width="wrap_content"
                 android:layout_height="16dp"
                 android:layout_marginLeft="10sp"
