@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="phrases_ru_arr">
+        <item name="phrase_0">Лучшее во что я играл</item>
+        <item name="phrase_1">Это точно создал один человек?</item>
+        <item name="phrase_2">Как поставить 5 звезд?</item>
+        <item name="phrase_3">10/10 - Игромания</item>
+        <item name="phrase_4">12/10 Ведьмак 3 от мира андроид игр</item>
+        <item name="phrase_5">Сам бог послал нам это чудо!!!</item>
+        <item name="phrase_6">А где кнопка доната?</item>
+        <item name="phrase_7">Сложно поверить что такие шедевры существуют</item>
+        <item name="phrase_8">ОМГ 10000/10</item>
+        <item name="phrase_9">Я не сплю случаем?</item>
+        <item name="phrase_10">Сюжет просто ОГОНЬ</item>
+        <item name="phrase_11">АБАЛДЕТЬ 0_0</item>
+        <item name="phrase_12">Жду майнкрафт 2 от этого разработчика</item>
+        <item name="phrase_13">Я никогда не выйду из этой игры!!!</item>
+        <item name="phrase_14">Заслуженный хайп, рекомендую</item>
+        <item name="phrase_15">Я показываю 9 из 10 пальцами, ибо у меня нет мизинца</item>
+        <item name="phrase_16">Просто целую экран телефона</item>
+        <item name="phrase_17">Кидаю свои шекели в телефон. Разраб, лови!</item>
+        <item name="phrase_18">Рубимся с пацанами со всей школы (о_о)</item>
+        <item name="phrase_19">Жду вторую часть</item>
+        <item name="phrase_20">А когда приквел?</item>
+    </string-array>
+</resources>

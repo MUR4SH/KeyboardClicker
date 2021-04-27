@@ -1,0 +1,25 @@
+<resources>
+    <string-array name="names_array">
+        <item name="name_0">Not a Murash</item>
+        <item name="name_1">Someone</item>
+        <item name="name_2">Alexey Solovyov</item>
+        <item name="name_3">Jack Sparrow</item>
+        <item name="name_4">Billy Harrington</item>
+        <item name="name_5">XxX_EpicGamer_XxX</item>
+        <item name="name_6">Not_a_bot_2097</item>
+        <item name="name_7">Funny man</item>
+        <item name="name_8">Valerya Orlova</item>
+        <item name="name_9">Igor Petrov</item>
+        <item name="name_10">yujtFfvlu</item>
+        <item name="name_11">Petya_2009</item>
+        <item name="name_12">3P1C_G4M3R_227</item>
+        <item name="name_13">Straight Shooter</item>
+        <item name="name_14">Steve from minecraft</item>
+        <item name="name_15">Alex from minecraft</item>
+        <item name="name_16">Ded inside</item>
+        <item name="name_17">Qwerty</item>
+        <item name="name_18">SadBoy(T.T)</item>
+        <item name="name_19">KawaiGirl(UwU)</item>
+        <item name="name_20">AltMiddleHero</item>
+    </string-array>
+</resources>

@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Keyboard Clicker</string>
+    <string name="start_button_eng">Start</string>
+    <string name="options_eng">Options</string>
+    <string name="initiate_text_ru">
+        Привет, дружище! Давно мы не виделись. Как дела, что нового?
+    </string>
+    <string name="initiate_text_eng">
+        Sup paul! We\'ve not seen each other for a long time. How are you, what\'s new?
+    </string>
+    <string name="ending_text_ru">
+        Ох, теперь я вспомнил почему мы перестали общаться...
+    </string>
+    <string name="ending_text_eng">
+        Oh, now i remember why we stopped chatting...
+    </string>
+    <string name="todo">TODO</string>
+    <string name="back">Back</string>
+</resources>
