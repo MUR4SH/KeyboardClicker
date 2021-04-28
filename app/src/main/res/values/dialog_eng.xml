@@ -7,9 +7,16 @@
         <item name="dialog_3">See ya)</item>
     </string-array>
     <string-array name="player_eng">
-        <item name="dialog_3">one</item>
-        <item name="dialog_3">two</item>
-        <item name="dialog_3">three</item>
-        <item name="dialog_3">four</item>
+        <item name="dialog_0">How am i? - I\'m great, thanks, btw near 5 years ago i\'ve bought bitcoin and now i\'m milliner, LOL!
+            Now i live in center of Moscow, i\'ve bought 2 flats - with two rooms at south-west and with three rooms close to the center. First apartment rent out for near 40 thousands rubles, i have lots of tenants, no matter this virus.
+            Also i\'ve got a new car, chevrole camarik, which you could saw in "Transformators", it\'s awesome XD, but i don\'t drive it much, bcs public transport in moscow is very advanced.
+            I wake up at morning, go into a subway and ride to the work. Oh yes, almost forgot, now i have a job, almost a job, one my friend opened a company, and i help him with technical issues,
+            and not only technical, at least payment is good) By the way last part from my bitcoin\'s money i put in a bank at a good interest rate, so i\'m chilling, sometimes i think about stop helping my friend…
+            But i help him not for money, i help him for process and results. Because you know, staying at home is boring, and sometimes you just want to go for a walk.
+            I\'m not boasting, as you might think, i\'m just asking a question. And everything isn\'t very good, tax service always spams me, scammers always call me, i\'m tired of it! But i\'m ok)</item>
+        <item name="dialog_1">And how are you, what\'s new? We\'ve not chatted for 7 years, i almost forget how you look like XD (joke). But you know, we can meet one day, go to coffee shop or smth.
+            Because i don\'t like chatting online, i like real conversations)</item>
+        <item name="dialog_2">Cool let\'s meet at 12 a.m. at friday 13 next week, at old Arbat street from west side? There is a popular fast food point.</item>
+        <item name="dialog_3">Nice, so goodbye)</item>
     </string-array>
 </resources>
