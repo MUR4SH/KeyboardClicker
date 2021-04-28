@@ -1,39 +1,30 @@
 package com.example.keyboardclicker;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
-import android.content.res.Resources;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Locale;
 import java.util.Random;
 
-class MenuMessage extends AppCompatActivity {
+class MenuMessage extends MainActivity {
     private String nickname;
     private String message;
     public MenuMessage(Context ctx){
-        String lang;
-        if (ctx.getResources().getString(R.string.settings_language).equals("system")) {
-            lang = Locale.getDefault().getLanguage();
-        }else{
-            lang = ctx.getResources().getString(R.string.settings_language);
-        }
+
         Random r = new Random();
         //String names[] = getResources().getStringArray(R.array.names_array);
         this.nickname = ctx.getResources().getStringArray(R.array.names_array)[r.nextInt(20)];
-        if (lang.equals("ru") || lang.equals("RU") || lang.equals("Russian") || lang.equals("RUSSIAN") || lang.equals("russian")) {
+        if (OptionsActivity.GetSettings(ctx)[0].equals("ru")) {
             //String phrases[] = getResources().getStringArray(R.array.phrases_ru_arr);
             this.message =  ctx.getResources().getStringArray(R.array.phrases_ru_arr)[r.nextInt(20)];
         }else{
@@ -57,11 +48,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        this.SetAppLocale(this);
         this.SpamMessages(25,3000,(LinearLayout)findViewById(R.id.chat_window),false);
         CustomScrollView myScrollView = (CustomScrollView) findViewById(R.id.scroll_view);
         myScrollView.setEnableScrolling(false); // disable scrolling
 
         Button btn_start = (Button)findViewById(R.id.btn_start);
+        Button btn_options = (Button)findViewById(R.id.btn_options);
 
         btn_start.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,8 +67,38 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        btn_options.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try{
+                    Intent intent = new Intent(MainActivity.this,OptionsActivity.class);
+                    startActivity(intent);finish();
+                }catch(Exception e){
+
+                }
+            }
+        });
         /*Window w = getWindow();
         w.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
+    }
+
+    public void SetAppLocale(Context ctx){
+        Button btn_start = (Button)findViewById(R.id.btn_start);
+        Button btn_options = (Button)findViewById(R.id.btn_options);
+        Button btn_scores = (Button)findViewById(R.id.btn_scores);
+
+        if (OptionsActivity.GetSettings(ctx)[0].equals("ru")) {
+            //String phrases[] = getResources().getStringArray(R.array.phrases_ru_arr);
+            btn_start.setText(R.string.start_button_ru);
+            btn_options.setText(R.string.options_button_ru);
+            btn_scores.setText(R.string.scores_button_ru);
+
+        }else{
+            //String phrases[] = getResources().getStringArray(R.array.phrases_eng_arr);
+            btn_start.setText(R.string.start_button_eng);
+            btn_options.setText(R.string.options_button_eng);
+            btn_scores.setText(R.string.scores_button_eng);
+        }
     }
 
     public void SpamMessages(int count,int time,final LinearLayout chat_win,boolean turn){

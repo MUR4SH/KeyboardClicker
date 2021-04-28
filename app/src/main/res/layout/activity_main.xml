@@ -57,7 +57,16 @@
                 android:layout_height="70dp"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/button_main_menu"
-                android:text="@string/options_eng"
+                android:text="@string/options_button_eng"
+                tools:ignore="MissingConstraints" />
+
+            <Button
+                android:id="@+id/btn_scores"
+                android:layout_width="190dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/button_main_menu"
+                android:text="@string/scores_button_eng"
                 tools:ignore="MissingConstraints" />
         </LinearLayout>
 
