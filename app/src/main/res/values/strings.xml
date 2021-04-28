@@ -12,10 +12,18 @@
     <string name="todo">TODO</string>
     <string name="back_eng">Back</string>
     <string name="back_ru">Назад</string>
+    <string name="about_btn_eng">About</string>
+    <string name="about_btn_ru">О программе</string>
     <string name="language_eng">Language</string>
     <string name="language_ru">Язык</string>
     <string name="username_eng">Username</string>
     <string name="username_ru">Никнейм</string>
     <string name="russian">Russian</string>
     <string name="english">English</string>
+    <string name="about_ru">Программа обучению работе с клавиатурой в игровой форме.
+    При нажатии на "начать" запускается таймер и выдаются слова, которые надо написать.
+    В конце вам покажут время за которое вы справились с игрой и предложат сохранить результат.</string>
+    <string name="about_eng">This program helps people to learn to work with a keyboard.
+    Whe you press start button, program will initiate special timer and will show you words, which you should write.
+    After finishing game program would show you your score and ask you about saving it.</string>
 </resources>

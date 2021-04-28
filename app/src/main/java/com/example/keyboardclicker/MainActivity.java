@@ -1,6 +1,8 @@
 package com.example.keyboardclicker;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         this.SetAppLocale(this);
+        Context ctx = this;
         this.SpamMessages(25,3000,(LinearLayout)findViewById(R.id.chat_window),false);
         CustomScrollView myScrollView = (CustomScrollView) findViewById(R.id.scroll_view);
         myScrollView.setEnableScrolling(false); // disable scrolling
@@ -56,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         Button btn_start = (Button)findViewById(R.id.btn_start);
         Button btn_options = (Button)findViewById(R.id.btn_options);
         Button btn_scores = (Button)findViewById(R.id.btn_scores);
+        Button btn_about = (Button)findViewById(R.id.about);
 
         btn_start.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,6 +94,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        btn_about.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ShowAbout(ctx);
+            }
+        });
         /*Window w = getWindow();
         w.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
     }
@@ -98,18 +108,21 @@ public class MainActivity extends AppCompatActivity {
         Button btn_start = (Button)findViewById(R.id.btn_start);
         Button btn_options = (Button)findViewById(R.id.btn_options);
         Button btn_scores = (Button)findViewById(R.id.btn_scores);
+        Button btn_about = (Button)findViewById(R.id.about);
 
         if (OptionsActivity.GetSettings(ctx)[0].equals("ru")) {
             //String phrases[] = getResources().getStringArray(R.array.phrases_ru_arr);
             btn_start.setText(R.string.start_button_ru);
             btn_options.setText(R.string.options_button_ru);
             btn_scores.setText(R.string.scores_button_ru);
+            btn_about.setText(R.string.about_btn_ru);
 
         }else{
             //String phrases[] = getResources().getStringArray(R.array.phrases_eng_arr);
             btn_start.setText(R.string.start_button_eng);
             btn_options.setText(R.string.options_button_eng);
             btn_scores.setText(R.string.scores_button_eng);
+            btn_about.setText(R.string.about_btn_eng);
         }
     }
 
@@ -159,6 +172,26 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }, time);
+    }
+    public void ShowAbout(Context ctx) {
+        String text;
+        String title="About";
+        if(OptionsActivity.GetSettings(ctx)[0].equals("")){
+            OptionsActivity.SetLang(ctx);
+        }
+        if (OptionsActivity.GetSettings(ctx)[0].equals("ru")) {
+            text = getResources().getString(R.string.about_ru);
+            title = "О программе";
+        }else{
+            text = getResources().getString(R.string.about_eng);
+            title="About";
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+        builder.setTitle(title)
+                .setMessage(text)
+                .setCancelable(true);
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 }
 
