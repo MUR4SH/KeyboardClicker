@@ -87,7 +87,14 @@ public class ScoresActivity extends AppCompatActivity {
         db.execSQL("CREATE TABLE IF NOT EXISTS scores (name TEXT, time TEXT);");
         String arr[] =  {OptionsActivity.GetSettings(ctx)[1],time};
         Cursor curs = db.rawQuery("SELECT * from scores WHERE name=?;",new String[]{OptionsActivity.GetSettings(ctx)[1]});
-        if(curs.getColumnCount()>0){
+        Boolean check=true;
+        try {
+            curs.moveToFirst();
+            check = curs.getString(1).isEmpty();
+        }catch(Exception e){
+            check = true;
+        }
+        if(!check){
             Cursor query = db.rawQuery("UPDATE scores SET time=? WHERE name=?", new String[]{time, OptionsActivity.GetSettings(ctx)[1]});
         }else{
             db.execSQL("INSERT INTO scores (name,time) VALUES(?,?);",arr);

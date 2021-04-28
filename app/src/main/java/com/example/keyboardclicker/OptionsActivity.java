@@ -25,6 +25,7 @@ import java.util.Locale;
 public class OptionsActivity extends AppCompatActivity {
     static String lang="";
     static String username="";
+    static Boolean test = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +41,7 @@ public class OptionsActivity extends AppCompatActivity {
         RadioButton ru_lang = (RadioButton) findViewById(R.id.ru_lang);
         RadioButton eng_lang = (RadioButton) findViewById(R.id.eng_lang);
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.lang_group);
+        RadioButton tst_btn = (RadioButton) findViewById(R.id.test_btn);
 
         String arr[] = GetSettings(this);
         lang = arr[0];
@@ -56,6 +58,7 @@ public class OptionsActivity extends AppCompatActivity {
         username_opt_label.setText(this.lang.equals("ru")?R.string.username_ru:R.string.username_eng);
         btn_return.setText(this.lang.equals("ru")?R.string.back_ru:R.string.back_eng);
         btn_accept.setText(this.lang.equals("ru")?R.string.accept_ru:R.string.accept_eng);
+        tst_btn.setChecked(test);
 
         btn_return.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,7 +81,7 @@ public class OptionsActivity extends AppCompatActivity {
                     }else if(radioGroup.getCheckedRadioButtonId() == R.id.ru_lang){
                         lang = "ru";
                     }
-
+                    SetTest(tst_btn.isChecked());
                     if (username_edit.getText().toString().length() >= 3){
                         username = username_edit.getText().toString();
                         SetSettings(ctx);
@@ -117,8 +120,14 @@ public class OptionsActivity extends AppCompatActivity {
 
         db.execSQL("CREATE TABLE IF NOT EXISTS settings (id INT,language TEXT, username TEXT);");
         Cursor curs = db.rawQuery("SELECT * from settings WHERE id=?;", new String[]{"1"});
-        curs.moveToFirst();
-        if(!curs.getString(1).isEmpty()){
+        Boolean check=true;
+        try {
+            curs.moveToFirst();
+            check = curs.getString(1).isEmpty();
+        }catch(Exception e){
+            check = true;
+        }
+        if(!check){
             String arr[]= {lang,username,"1"};
             db.execSQL("UPDATE settings SET language=?, username=? WHERE id=?;",arr);
         }else{
@@ -137,11 +146,16 @@ public class OptionsActivity extends AppCompatActivity {
         String arr[]=new String[2];
         String lng="";
         String usrname="";
-        query.moveToFirst();
-        if(!query.getString(1).isEmpty()){
-            lng = query.getString(1);
-            usrname = query.getString(2);
-        }else{
+        try{
+            query.moveToFirst();
+            if(!query.getString(1).isEmpty()){
+                lng = query.getString(1);
+                usrname = query.getString(2);
+            }else{
+                lng="eng";
+                usrname="username";
+            }
+        }catch(Exception err){
             lng="eng";
             usrname="username";
         }
@@ -160,5 +174,11 @@ public class OptionsActivity extends AppCompatActivity {
         query.close();
         db.close();
         return arr;
+    }
+    public static void SetTest(Boolean t){
+        test = t;
+    }
+    public static Boolean GetTest(){
+        return test;
     }
 }

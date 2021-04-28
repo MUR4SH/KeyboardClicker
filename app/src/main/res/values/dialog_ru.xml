@@ -19,4 +19,10 @@
         <item name="dialog_2">Круто, давай тогда встретимся 13го в пятницу, часов в 12, на старом арбате со стороны мида? Там еще популярный ресторан быстрого питания находится.</item>
         <item name="dialog_3">Найс, тогда до встречи)</item>
     </string-array>
+    <string-array name="test_player_ru">
+        <item name="dialog_0">Раз два три</item>
+        <item name="dialog_1">Слово 12345, много слов</item>
+        <item name="dialog_2">Бла бла бла</item>
+        <item name="dialog_3">Текст!?:*()</item>
+    </string-array>
 </resources>

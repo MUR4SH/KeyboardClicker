@@ -19,4 +19,10 @@
         <item name="dialog_2">Cool let\'s meet at 12 a.m. at friday 13 next week, at old Arbat street from west side? There is a popular fast food point.</item>
         <item name="dialog_3">Nice, so goodbye)</item>
     </string-array>
+    <string-array name="test_player_eng">
+        <item name="dialog_0">One two three</item>
+        <item name="dialog_1">Word 1234, many words...</item>
+        <item name="dialog_2">Bruh, bread 1-2-3-4</item>
+        <item name="dialog_3">Text!?:*()</item>
+    </string-array>
 </resources>

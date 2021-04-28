@@ -82,13 +82,21 @@ class Chat extends game_activity {
         }
         if (OptionsActivity.GetSettings(ctx)[0].equals("ru")) {
             try {
-                this.phrase = ctx.getResources().getStringArray(R.array.player_ru)[num];
+                if(OptionsActivity.GetTest()){
+                    this.phrase = ctx.getResources().getStringArray(R.array.test_player_ru)[num];
+                }else {
+                    this.phrase = ctx.getResources().getStringArray(R.array.player_ru)[num];
+                }
             }catch (Exception err){
 
             }
         }else{
             try {
-                this.phrase = ctx.getResources().getStringArray(R.array.player_eng)[num];
+                if(OptionsActivity.GetTest()){
+                    this.phrase = ctx.getResources().getStringArray(R.array.test_player_eng)[num];
+                }else {
+                    this.phrase = ctx.getResources().getStringArray(R.array.player_eng)[num];
+                }
             }catch (Exception err){
 
             }
