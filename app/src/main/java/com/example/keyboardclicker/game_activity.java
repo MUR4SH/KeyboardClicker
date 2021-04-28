@@ -40,7 +40,7 @@ class Chat extends game_activity {
         Random r = new Random();
 
         this.nickname = ctx.getResources().getStringArray(R.array.names_array)[r.nextInt(20)];
-        this.SetLang(ctx);
+        OptionsActivity.SetLang(ctx);
         this.SetMessage(ctx,0);
         this.SetPhrase(ctx,0);
         this.num = 0;
@@ -60,7 +60,7 @@ class Chat extends game_activity {
     }
     public void SetMessage(Context ctx,int num){
         if(OptionsActivity.GetSettings(ctx)[0].equals("")){
-            this.SetLang(ctx);
+            OptionsActivity.SetLang(ctx);
         }
         if (OptionsActivity.GetSettings(ctx)[0].equals("ru")) {
             try {
@@ -78,7 +78,7 @@ class Chat extends game_activity {
     }
     public void SetPhrase(Context ctx,int num){
         if(OptionsActivity.GetSettings(ctx)[0].equals("")){
-            this.SetLang(ctx);
+            OptionsActivity.SetLang(ctx);
         }
         if (OptionsActivity.GetSettings(ctx)[0].equals("ru")) {
             try {
@@ -195,8 +195,8 @@ class Chat extends game_activity {
 }
 
 public class game_activity extends AppCompatActivity {
-    long start_time=0;
-    long time=0; //time in ms
+    static long start_time=0;
+    static long time=0; //time in ms
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_activity);
@@ -264,15 +264,7 @@ public class game_activity extends AppCompatActivity {
             }
         });
     }
-    public void SetLang(Context ctx){
-        String lang="";
-        if (ctx.getResources().getString(R.string.settings_language).equals("system")) {
-            lang = Locale.getDefault().getLanguage();
-        }else{
-            lang = ctx.getResources().getString(R.string.settings_language);
-        }
-    }
-    public void showKeyboard(EditText mEtSearch, Context context) {
+    public static void showKeyboard(EditText mEtSearch, Context context) {
         mEtSearch.requestFocus();
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
@@ -281,22 +273,22 @@ public class game_activity extends AppCompatActivity {
         csv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));*/
     }
 
-    public void hideSoftKeyboard(EditText mEtSearch, Context context) {
+    public static void hideSoftKeyboard(EditText mEtSearch, Context context) {
         mEtSearch.clearFocus();
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mEtSearch.getWindowToken(), 0);
     }
 
-    public void StartTimer(){
-        this.start_time = SystemClock.elapsedRealtime();
+    public static void StartTimer(){
+        start_time = SystemClock.elapsedRealtime();
     }
 
-    public void StopTimer(){
-        this.time = SystemClock.elapsedRealtime() - this.start_time;
+    public static void StopTimer(){
+        time = SystemClock.elapsedRealtime() - start_time;
     }
 
-    public String CountTime(){
-        long totalSecs = this.time / 1000;
+    public static String CountTime(){
+        long totalSecs = time / 1000;
         long hours = totalSecs / 3600;
         long minutes = (totalSecs % 3600) / 60;
         long seconds = totalSecs % 60;
@@ -305,13 +297,13 @@ public class game_activity extends AppCompatActivity {
     }
 
     public void GoToMenuWindow(Context ctx) {
-        String last_score = GetUsersScoreOffline(ctx);
+        String last_score = ScoresActivity.GetUsersScoreOffline(ctx);
         String title ="";
         String time_text="";
         String save="";
         String not_save="";
         if(OptionsActivity.GetSettings(ctx)[0].equals("")){
-            this.SetLang(ctx);
+            OptionsActivity.SetLang(ctx);
         }
         if (OptionsActivity.GetSettings(ctx)[0].equals("ru")) {
             if (last_score.compareToIgnoreCase(CountTime())>=0) title = "Конец";
@@ -334,7 +326,7 @@ public class game_activity extends AppCompatActivity {
                 .setPositiveButton(save,new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         try{
-                            SetScore(ctx,"username");
+                            ScoresActivity.SetScore(ctx,"username");
                             Intent intent = new Intent(game_activity.this,MainActivity.class);
                             startActivity(intent);
                             finish();
@@ -356,58 +348,5 @@ public class game_activity extends AppCompatActivity {
                 });
         AlertDialog alert = builder.create();
         alert.show();
-    }
-
-    public String[] GetScores(Context ctx){
-        SQLiteDatabase db = ctx.openOrCreateDatabase("KeyboardClicker.db", MODE_PRIVATE, null);
-        db.execSQL("CREATE TABLE IF NOT EXISTS scores (name TEXT, time TEXT)");
-        String arr[] = new String[0];
-        try{
-            Cursor query = db.rawQuery("SELECT * FROM scores;", null);
-
-            while(query.moveToNext()){
-                String name = query.getString(0);
-                String time = query.getString(1);
-                arr[arr.length] = "Name: "+name+" Time: "+time;
-            }
-            query.close();
-        }catch (Exception err){
-        }
-        db.close();
-        return arr;
-    }
-
-    public void SetScore(Context ctx,String name){
-        SQLiteDatabase db = ctx.openOrCreateDatabase("KeyboardClicker.db", MODE_PRIVATE, null);
-        String time = CountTime();
-
-        db.execSQL("CREATE TABLE IF NOT EXISTS scores (name TEXT, time TEXT)");
-
-        db.execSQL("INSERT into scores VALUES(?,?)", new String[]{OptionsActivity.GetSettings(ctx)[1],time});
-
-        db.close();
-    }
-
-    public String GetUsersScoreOffline(Context ctx){
-        SQLiteDatabase db = ctx.openOrCreateDatabase("KeyboardClicker.db", MODE_PRIVATE, null);
-        /*WifiManager manager = (WifiManager)getSystemService(Context.WIFI_SERVICE);
-        WifiInfo info = manager.getConnectionInfo();
-        String mac = info.getMacAddress();*/
-        ;
-        db.execSQL("CREATE TABLE IF NOT EXISTS scores (name TEXT, time TEXT)");
-        String arr="";
-
-        try {
-            Cursor query = db.rawQuery("SELECT * FROM scores WHERE name=?", new String[]{OptionsActivity.GetSettings(ctx)[1]});
-            query.moveToFirst();
-            String time = query.getString(1);
-            arr = time;
-            query.close();
-        }catch(Exception err){
-            arr = "0:0:0";
-        }
-
-        db.close();
-        return arr;
     }
 }

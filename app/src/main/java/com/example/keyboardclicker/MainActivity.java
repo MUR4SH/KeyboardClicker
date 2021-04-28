@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button btn_start = (Button)findViewById(R.id.btn_start);
         Button btn_options = (Button)findViewById(R.id.btn_options);
+        Button btn_scores = (Button)findViewById(R.id.btn_scores);
 
         btn_start.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,6 +73,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try{
                     Intent intent = new Intent(MainActivity.this,OptionsActivity.class);
+                    startActivity(intent);finish();
+                }catch(Exception e){
+
+                }
+            }
+        });
+        btn_scores.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try{
+                    Intent intent = new Intent(MainActivity.this,ScoresActivity.class);
                     startActivity(intent);finish();
                 }catch(Exception e){
 
