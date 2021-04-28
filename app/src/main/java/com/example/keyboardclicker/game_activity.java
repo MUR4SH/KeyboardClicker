@@ -288,11 +288,11 @@ public class game_activity extends AppCompatActivity {
     }
 
     public static void StartTimer(){
-        start_time = SystemClock.elapsedRealtime();
+        start_time = SystemClock.uptimeMillis();
     }
 
     public static void StopTimer(){
-        time = SystemClock.elapsedRealtime() - start_time;
+        time = SystemClock.uptimeMillis()- start_time;
     }
 
     public static String CountTime(){
