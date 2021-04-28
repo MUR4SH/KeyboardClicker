@@ -29,6 +29,7 @@ public class ScoresActivity extends AppCompatActivity {
         OptionsActivity.SetLang(this);
         Button btn_return = (Button)findViewById(R.id.btn_back);
         LinearLayout ll = (LinearLayout)findViewById(R.id.chat_window);
+        ll.setPadding(10,10,10,10);
         ll.setBackgroundResource(R.drawable.button_white_border);
 
         String arr[] = OptionsActivity.GetSettings(this);
@@ -58,22 +59,25 @@ public class ScoresActivity extends AppCompatActivity {
     public static String[] GetScores(Context ctx){
         SQLiteDatabase db = ctx.openOrCreateDatabase("KeyboardClicker.db", MODE_PRIVATE, null);
         db.execSQL("CREATE TABLE IF NOT EXISTS scores (name TEXT, time TEXT)");
-        String arr[] = new String[0];
+        String arr[] = new String[255];
+        int i=0;
         try{
             Cursor query = db.rawQuery("SELECT * FROM scores;", null);
-            if(query.isNull(0)){
-                throw new Exception("err");
-            }
             while(query.moveToNext()){
                 String name = query.getString(0);
-                String time = query.getString(1);
-                arr[arr.length] = "Name: "+name+" Time: "+time;
+                String time = query.getString(1);;
+                arr[i] = "Name: "+name+" Time: "+time;
+                i++;
             }
             query.close();
         }catch (Exception err){
         }
+        String ar[] = new String[i];
+        for(int j=0;j<i;j++){
+            ar[j] = arr[j];
+        }
         db.close();
-        return arr;
+        return ar;
     }
 
     public static void SetScore(Context ctx,String name){
@@ -81,26 +85,32 @@ public class ScoresActivity extends AppCompatActivity {
         String time = game_activity.CountTime();
 
         db.execSQL("CREATE TABLE IF NOT EXISTS scores (name TEXT, time TEXT);");
-
-        db.execSQL("INSERT into scores VALUES(?,?);", new String[]{OptionsActivity.GetSettings(ctx)[1],time});
+        String arr[] =  {OptionsActivity.GetSettings(ctx)[1],time};
+        Cursor curs = db.rawQuery("SELECT * from scores WHERE name=?;",new String[]{OptionsActivity.GetSettings(ctx)[1]});
+        if(curs.getColumnCount()>0){
+            Cursor query = db.rawQuery("UPDATE scores SET time=? WHERE name=?", new String[]{time, OptionsActivity.GetSettings(ctx)[1]});
+        }else{
+            db.execSQL("INSERT INTO scores (name,time) VALUES(?,?);",arr);
+        }
 
         db.close();
     }
 
     public static  String GetUsersScoreOffline(Context ctx){
         SQLiteDatabase db = ctx.openOrCreateDatabase("KeyboardClicker.db", MODE_PRIVATE, null);
-        /*WifiManager manager = (WifiManager)getSystemService(Context.WIFI_SERVICE);
-        WifiInfo info = manager.getConnectionInfo();
-        String mac = info.getMacAddress();*/
-        ;
+
         db.execSQL("CREATE TABLE IF NOT EXISTS scores (name TEXT, time TEXT);");
         String arr="";
 
         try {
             Cursor query = db.rawQuery("SELECT * FROM scores WHERE name=?;", new String[]{OptionsActivity.GetSettings(ctx)[1]});
-            query.moveToFirst();
-            String time = query.getString(1);
-            arr = time;
+            if(query.getCount() <= 0){
+                arr = "0:0:0";
+            }else {
+                query.moveToFirst();
+                String time = query.getString(1);
+                arr = time;
+            }
             query.close();
         }catch(Exception err){
             arr = "0:0:0";

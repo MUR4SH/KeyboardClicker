@@ -30,7 +30,7 @@ public class OptionsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.options_activity);
 
-        this.SetLang(this);
+        this.GetSettings(this);
         Button btn_return = (Button)findViewById(R.id.btn_back);
         Button btn_accept = (Button)findViewById(R.id.btn_accept);
 
@@ -40,16 +40,18 @@ public class OptionsActivity extends AppCompatActivity {
         RadioButton ru_lang = (RadioButton) findViewById(R.id.ru_lang);
         RadioButton eng_lang = (RadioButton) findViewById(R.id.eng_lang);
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.lang_group);
-        if(lang.equals("eng")){
-            eng_lang.toggle();
-        }else if(lang.equals("ru")){
-            ru_lang.toggle();
-        }
 
         String arr[] = GetSettings(this);
         lang = arr[0];
         username = arr[1];
+        this.SetLang(this);
+        if(lang.equals("eng")){
+            eng_lang.setChecked(true);
+        }else if(lang.equals("ru")){
+            ru_lang.setChecked(true);
+        }
 
+        username_edit.setText(username);
         lang_opt_label.setText(this.lang.equals("ru")?R.string.language_ru:R.string.language_eng);
         username_opt_label.setText(this.lang.equals("ru")?R.string.username_ru:R.string.username_eng);
         btn_return.setText(this.lang.equals("ru")?R.string.back_ru:R.string.back_eng);
@@ -114,14 +116,15 @@ public class OptionsActivity extends AppCompatActivity {
         SQLiteDatabase db = ctx.openOrCreateDatabase("KeyboardClicker.db", MODE_PRIVATE, null);
 
         db.execSQL("CREATE TABLE IF NOT EXISTS settings (id INT,language TEXT, username TEXT);");
-        try{
-            String arr[]= {lang,username};
-            db.execSQL("UPDATE settings SET language=?, username=? WHERE id='1';",arr);
-        }catch(Exception err) {
+        Cursor curs = db.rawQuery("SELECT * from settings WHERE id=?;", new String[]{"1"});
+        curs.moveToFirst();
+        if(!curs.getString(1).isEmpty()){
+            String arr[]= {lang,username,"1"};
+            db.execSQL("UPDATE settings SET language=?, username=? WHERE id=?;",arr);
+        }else{
             String arr[]= {"1",lang,username};
-            db.execSQL("INSERT INTO settings VALUES(?,?,?);",arr);
+            db.execSQL("INSERT INTO settings (id,language,username) VALUES(?,?,?);",arr);
         }
-
         db.close();
     }
 
@@ -130,15 +133,15 @@ public class OptionsActivity extends AppCompatActivity {
 
         db.execSQL("CREATE TABLE IF NOT EXISTS settings (id INT,language TEXT, username TEXT);");
 
-        Cursor query = db.rawQuery("SELECT * FROM settings WHERE id='1';", null);
+        Cursor query = db.rawQuery("SELECT * FROM settings WHERE id=?;", new String[]{"1"});
         String arr[]=new String[2];
         String lng="";
         String usrname="";
         query.moveToFirst();
-        try {
+        if(!query.getString(1).isEmpty()){
             lng = query.getString(1);
             usrname = query.getString(2);
-        }catch(Exception err){
+        }else{
             lng="eng";
             usrname="username";
         }
