@@ -60,6 +60,17 @@ public class OptionsActivity extends AppCompatActivity {
         btn_accept.setText(this.lang.equals("ru")?R.string.accept_ru:R.string.accept_eng);
         tst_btn.setChecked(test);
 
+        tst_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try{
+                    test = !test;
+                    tst_btn.setChecked(test);
+                }catch(Exception e){
+
+                }
+            }
+        });
         btn_return.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
