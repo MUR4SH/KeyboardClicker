@@ -1,28 +1,31 @@
 package com.example.keyboardclicker;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
-import android.graphics.Region;
 import android.os.Bundle;
-import android.util.TypedValue;
-import android.view.Gravity;
+import android.os.StrictMode;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class ScoresActivity extends AppCompatActivity {
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
+
+public class ScoresActivity extends AppCompatActivity  {
+    static String server_url="http://192.168.117.17:8080";
     public void onCreate(Bundle savedInstanceState){
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.scores_activity);
 
@@ -38,7 +41,9 @@ public class ScoresActivity extends AppCompatActivity {
 
         String scores[] = GetScores(this);
         for(int i=0;i<scores.length;i++){
-            ll.addView(FillScores(this,scores[i]));
+           // if(!scores[i].equals("")){
+                ll.addView(FillScores(this,scores[i]));
+           // }
         }
 
         btn_return.setText(lang.equals("ru")?R.string.back_ru:R.string.back_eng);
@@ -55,76 +60,97 @@ public class ScoresActivity extends AppCompatActivity {
             }
         });
     }
-
-    public static String[] GetScores(Context ctx){
-        SQLiteDatabase db = ctx.openOrCreateDatabase("KeyboardClicker.db", MODE_PRIVATE, null);
-        db.execSQL("CREATE TABLE IF NOT EXISTS scores (name TEXT, time TEXT)");
-        String arr[] = new String[255];
-        int i=0;
+    public void onBackPressed(){
+        //super.onBackPressed();
         try{
-            Cursor query = db.rawQuery("SELECT * FROM scores;", null);
-            while(query.moveToNext()){
-                String name = query.getString(0);
-                String time = query.getString(1);;
-                arr[i] = "Name: "+name+" Time: "+time;
-                i++;
+            Intent intent = new Intent(ScoresActivity.this,MainActivity.class);
+            startActivity(intent);finish();
+        }catch(Exception e){
+
+        }
+    }
+
+    public static String[] GetScores(Context ctx) {
+        String[] arr;
+        try{
+            BufferedReader in = new BufferedReader(new InputStreamReader(Request("{\"type\": \"get_all\",\"data\": {\"user_id\":\"\",\"username\":\"\",\"time\":\"\"}}",server_url)));
+            String inputLine;
+            StringBuffer content = new StringBuffer();
+            while ((inputLine = in.readLine()) != null) {
+                content.append(inputLine);
             }
-            query.close();
-        }catch (Exception err){
+            arr = content.toString().split("\n");
+            return arr;
+        }catch(Exception err){
+            return new String[1];
         }
-        String ar[] = new String[i];
-        for(int j=0;j<i;j++){
-            ar[j] = arr[j];
-        }
-        db.close();
-        return ar;
     }
 
     public static void SetScore(Context ctx,String name){
-        SQLiteDatabase db = ctx.openOrCreateDatabase("KeyboardClicker.db", MODE_PRIVATE, null);
-        String time = game_activity.CountTime();
-
-        db.execSQL("CREATE TABLE IF NOT EXISTS scores (name TEXT, time TEXT);");
-        String arr[] =  {OptionsActivity.GetSettings(ctx)[1],time};
-        Cursor curs = db.rawQuery("SELECT * from scores WHERE name=?;",new String[]{OptionsActivity.GetSettings(ctx)[1]});
-        Boolean check=true;
         try {
-            curs.moveToFirst();
-            check = curs.getString(1).isEmpty();
-        }catch(Exception e){
-            check = true;
+            Request("{\"type\": \"set\",\"data\": {\"user_id\":\"\",\"username\":\"" + OptionsActivity.GetSettings(ctx)[1] + "\",\"time\":\"" + game_activity.CountTime() + "\"}}",server_url);
+        }catch(Exception err){
+            err=err;
         }
-        if(!check){
-            Cursor query = db.rawQuery("UPDATE scores SET time=? WHERE name=?", new String[]{time, OptionsActivity.GetSettings(ctx)[1]});
-        }else{
-            db.execSQL("INSERT INTO scores (name,time) VALUES(?,?);",arr);
-        }
-
-        db.close();
     }
 
-    public static  String GetUsersScoreOffline(Context ctx){
-        SQLiteDatabase db = ctx.openOrCreateDatabase("KeyboardClicker.db", MODE_PRIVATE, null);
+    private static InputStream Request(String data, String urls){
+        final InputStream[] arr = new InputStream[1];
+        try{
+            Thread thread1 = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        URL url = null;
+                        HttpURLConnection http = null;
+                        try {
+                            url = new URL(urls);
+                            http = (HttpURLConnection)url.openConnection();
+                            http.setRequestMethod("POST");
+                        } catch (Exception err) {
+                        }
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS scores (name TEXT, time TEXT);");
-        String arr="";
+                        http.setDoOutput(true);
+                        http.setRequestProperty("Content-Type", "text/plain");
 
-        try {
-            Cursor query = db.rawQuery("SELECT * FROM scores WHERE name=?;", new String[]{OptionsActivity.GetSettings(ctx)[1]});
-            if(query.getCount() <= 0){
-                arr = "0:0:0";
-            }else {
-                query.moveToFirst();
-                String time = query.getString(1);
-                arr = time;
-            }
-            query.close();
+                        http.setConnectTimeout(2000);
+                        http.setReadTimeout(2000);
+
+                        byte[] out = data.getBytes(StandardCharsets.UTF_8);
+                        OutputStream stream = http.getOutputStream();
+                        stream.write(out);
+                        stream.close();
+
+                        arr[0] = http.getInputStream();
+                        http.disconnect();
+                    }catch (Exception er){
+                        er =er;
+                    }
+                }
+            });
+            thread1.start();
+            thread1.run();
+            thread1.interrupt();
+            return arr[0];
         }catch(Exception err){
-            arr = "0:0:0";
+            return arr[0];
         }
+    }
 
-        db.close();
-        return arr;
+    public static String GetUsersScoreOffline(Context ctx){
+        String arr="";
+        try{
+            BufferedReader in = new BufferedReader(new InputStreamReader(Request("{\"type\": \"get_all\",\"data\": {\"user_id\":\"\",\"username\":\""+OptionsActivity.GetSettings(ctx)[1]+"\",\"time\":\"\"}}",server_url)));
+            String inputLine;
+            StringBuffer content = new StringBuffer();
+            while ((inputLine = in.readLine()) != null) {
+                content.append(inputLine);
+            }
+            arr = content.toString();
+            return arr;
+        }catch(Exception err){
+            return arr;
+        }
     }
 
     public TextView FillScores(Context ctx,String text){

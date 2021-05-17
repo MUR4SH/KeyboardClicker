@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -45,6 +46,9 @@ class MenuMessage extends MainActivity {
 }
 
 public class MainActivity extends AppCompatActivity {
+    Handler hndlr = new Handler();
+    int counter = 25;
+    int timer = 3000; //ms
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
         this.SetAppLocale(this);
         Context ctx = this;
-        this.SpamMessages(25,3000,(LinearLayout)findViewById(R.id.chat_window),false);
+        //this.SpamMessages(counter,timer);
         CustomScrollView myScrollView = (CustomScrollView) findViewById(R.id.scroll_view);
         myScrollView.setEnableScrolling(false); // disable scrolling
 
@@ -103,7 +107,14 @@ public class MainActivity extends AppCompatActivity {
         /*Window w = getWindow();
         w.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
     }
-
+    public void onPause() {
+        super.onPause();
+        hndlr.removeCallbacksAndMessages(null);//stop msgs spam
+    }
+    public void onResume() {
+        super.onResume();
+        SpamMessages(counter,timer);
+    }
     public void SetAppLocale(Context ctx){
         Button btn_start = (Button)findViewById(R.id.btn_start);
         Button btn_options = (Button)findViewById(R.id.btn_options);
@@ -125,48 +136,51 @@ public class MainActivity extends AppCompatActivity {
             btn_about.setText(R.string.about_btn_eng);
         }
     }
-
-    public void SpamMessages(int count,int time,final LinearLayout chat_win,boolean turn){
+    public void SpamOne(final LinearLayout chat_win){
         MenuMessage user = new MenuMessage(this);
         TextView textView_msg = new TextView(this);
         TextView textView_user = new TextView(this);
         LinearLayout chat_cloud = new LinearLayout(this);
 
-        new android.os.Handler().postDelayed(new Runnable() {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(10,10,10,0);
+        //params.gravity = turn?Gravity.START:Gravity.END;
+        params.gravity = Gravity.START;
+        chat_cloud.setLayoutParams(params);
+        //chat_cloud.setGravity(turn?Gravity.START:Gravity.END);
+        chat_cloud.setGravity(Gravity.START);
+        chat_cloud.getGravity();
+        //chat_cloud.setBackgroundResource(turn?R.drawable.chat_cloud_left:R.drawable.chat_cloud_right);
+        chat_cloud.setBackgroundResource(R.drawable.chat_cloud_left);
+        chat_cloud.setOrientation(LinearLayout.VERTICAL);
+
+        textView_msg.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        textView_msg.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
+        textView_msg.setText(user.GetMessage());
+        //textView_msg.setGravity(turn?Gravity.START:Gravity.END);
+        textView_msg.setGravity(Gravity.START);
+        textView_msg.setTextColor(Color.parseColor("#FF000000"));
+
+        textView_user.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        textView_user.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f);
+        textView_user.setText(user.GetNick());
+        //textView_user.setGravity(turn?Gravity.START:Gravity.END);
+        textView_user.setTextColor(Color.parseColor("#88000000"));
+        textView_user.setGravity(Gravity.START);
+
+        chat_cloud.addView(textView_msg);
+        chat_cloud.addView(textView_user);
+
+        chat_win.addView(chat_cloud);
+    }
+    public void SpamMessages(int count,int time){
+        hndlr.postDelayed(new Runnable() {
             @Override
             public void run() {
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                params.setMargins(10,10,10,0);
-                //params.gravity = turn?Gravity.START:Gravity.END;
-                params.gravity = Gravity.START;
-                chat_cloud.setLayoutParams(params);
-                //chat_cloud.setGravity(turn?Gravity.START:Gravity.END);
-                chat_cloud.setGravity(Gravity.START);
-                chat_cloud.getGravity();
-                //chat_cloud.setBackgroundResource(turn?R.drawable.chat_cloud_left:R.drawable.chat_cloud_right);
-                chat_cloud.setBackgroundResource(R.drawable.chat_cloud_left);
-                chat_cloud.setOrientation(LinearLayout.VERTICAL);
-
-                textView_msg.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                textView_msg.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
-                textView_msg.setText(user.GetMessage());
-                //textView_msg.setGravity(turn?Gravity.START:Gravity.END);
-                textView_msg.setGravity(Gravity.START);
-                textView_msg.setTextColor(Color.parseColor("#FF000000"));
-
-                textView_user.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                textView_user.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f);
-                textView_user.setText(user.GetNick());
-                //textView_user.setGravity(turn?Gravity.START:Gravity.END);
-                textView_user.setTextColor(Color.parseColor("#88000000"));
-                textView_user.setGravity(Gravity.START);
-
-                chat_cloud.addView(textView_msg);
-                chat_cloud.addView(textView_user);
-
-                chat_win.addView(chat_cloud);
-                if(count!=0){
-                    SpamMessages(count-1,time,chat_win,!turn);
+                counter = count-1;
+                SpamOne((LinearLayout)findViewById(R.id.chat_window));
+                if(counter!=0){
+                    SpamMessages(counter,time);
                 }else{
                     return;
                 }

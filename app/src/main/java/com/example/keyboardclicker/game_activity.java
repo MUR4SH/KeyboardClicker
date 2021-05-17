@@ -205,6 +205,8 @@ class Chat extends game_activity {
 public class game_activity extends AppCompatActivity {
     static long start_time=0;
     static long time=0; //time in ms
+    static long pause_start=0; //начало паузы
+    static long pause=0; //Время на паузе
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_activity);
@@ -272,6 +274,24 @@ public class game_activity extends AppCompatActivity {
             }
         });
     }
+    public void onBackPressed(){
+        try{
+            Intent intent = new Intent(game_activity.this,MainActivity.class);
+            startActivity(intent);finish();
+        }catch(Exception e){
+
+        }
+    }
+    public void onPause() {
+        super.onPause();
+        pause_start = SystemClock.uptimeMillis();
+    }
+    public void onResume() {
+        super.onResume();
+        if(pause_start!=0){
+            pause += SystemClock.uptimeMillis()-pause_start;
+        }
+    }
     public static void showKeyboard(EditText mEtSearch, Context context) {
         mEtSearch.requestFocus();
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -292,7 +312,16 @@ public class game_activity extends AppCompatActivity {
     }
 
     public static void StopTimer(){
-        time = SystemClock.uptimeMillis()- start_time;
+        long tm = SystemClock.uptimeMillis();
+        if(start_time>0) {
+            time = tm - start_time - pause; //Отнимаем время на паузе
+        }else{
+            time = tm - start_time;
+        }
+        pause = 0;
+        start_time = 0;
+        pause_start = 0;
+        time = Math.abs(time);
     }
 
     public static String CountTime(){
@@ -321,7 +350,7 @@ public class game_activity extends AppCompatActivity {
             save = "Сохранить время";
             not_save = "Не сохранять";
         }else{
-            if (last_score.compareToIgnoreCase(CountTime())>=0) title = "The end";
+            if (last_score.compareToIgnoreCase(CountTime())<=0) title = "The end";
             else title = "New record!!!";
             time_text = "Time: ";
             save = "Save time";

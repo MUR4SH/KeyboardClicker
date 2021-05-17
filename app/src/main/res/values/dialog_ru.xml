@@ -20,6 +20,10 @@
         <item name="dialog_3">Найс, тогда до встречи)</item>
     </string-array>
     <string-array name="test_player_ru">
+        <item name="dialog_0">1</item>
+        <item name="dialog_1">1</item>
+        <item name="dialog_2">1</item>
+        <item name="dialog_3">1</item>
         <item name="dialog_0">Раз два три</item>
         <item name="dialog_1">Слово 12345, много слов</item>
         <item name="dialog_2">Бла бла бла</item>

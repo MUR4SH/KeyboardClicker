@@ -114,7 +114,11 @@ public class OptionsActivity extends AppCompatActivity {
             }
         });
     }
-
+    public void onBackPressed(){
+        //super.onBackPressed();
+        Intent intent = new Intent(OptionsActivity.this,MainActivity.class);
+        startActivity(intent);finish();
+    }
     public static void SetLang(Context ctx){
         if (GetSettings(ctx)[0].equals("")) {
             lang = Locale.getDefault().getLanguage();
