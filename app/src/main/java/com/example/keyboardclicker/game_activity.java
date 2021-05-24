@@ -309,6 +309,8 @@ public class game_activity extends AppCompatActivity {
 
     public static void StartTimer(){
         start_time = SystemClock.uptimeMillis();
+        pause = 0;
+        pause_start = 0;
     }
 
     public static void StopTimer(){
@@ -318,10 +320,11 @@ public class game_activity extends AppCompatActivity {
         }else{
             time = tm - start_time;
         }
+        pause=pause;
         pause = 0;
         start_time = 0;
         pause_start = 0;
-        time = Math.abs(time);
+        //time = Math.abs(time);
     }
 
     public static String CountTime(){
@@ -363,7 +366,7 @@ public class game_activity extends AppCompatActivity {
                 .setPositiveButton(save,new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         try{
-                            ScoresActivity.SetScore(ctx,"username");
+                            ScoresActivity.SetScore(ctx,OptionsActivity.GetSettings(ctx)[1]);
                             Intent intent = new Intent(game_activity.this,MainActivity.class);
                             startActivity(intent);
                             finish();

@@ -22,7 +22,7 @@ import java.nio.charset.StandardCharsets;
 
 
 public class ScoresActivity extends AppCompatActivity  {
-    static String server_url="http://192.168.117.17:8080";
+    static String server_url="http://192.168.117.17:8080"; //192.168.117.17
     public void onCreate(Bundle savedInstanceState){
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -128,7 +128,7 @@ public class ScoresActivity extends AppCompatActivity  {
                     }
                 }
             });
-            thread1.start();
+           // thread1.start();
             thread1.run();
             thread1.interrupt();
             return arr[0];

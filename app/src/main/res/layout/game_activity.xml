@@ -52,7 +52,7 @@
                 android:textColor="@color/black"
                 android:layout_marginRight="10dp"
                 android:gravity="right"
-                android:text="Human_228"
+                android:text="Human_bot"
                 android:textSize="20dp" />
 
             <ImageView
